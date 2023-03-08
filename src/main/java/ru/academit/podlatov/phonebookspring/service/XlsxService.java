@@ -2,23 +2,23 @@ package ru.academit.podlatov.phonebookspring.service;
 
 import org.springframework.stereotype.Service;
 import ru.academit.podlatov.phonebookspring.model.Contact;
-import ru.academit.podlatov.phonebookspring.service.workbookcreator.XlsxTableFileCreator;
+import ru.academit.podlatov.phonebookspring.service.workbookcreator.XlsxTableWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @Service
 public class XlsxService {
-    private final XlsxTableFileCreator fileCreator;
+    private final XlsxTableWriter fileCreator;
     private final ContactService contactService;
 
-    public XlsxService(ContactService contactService, XlsxTableFileCreator fileCreator) {
+    public XlsxService(ContactService contactService, XlsxTableWriter fileCreator) {
         this.fileCreator = fileCreator;
         this.contactService = contactService;
     }
 
     public byte[] getAllContactsXlsxByteArray() throws Exception {
-        boolean isRowNumerationNeeded = false;
+        boolean isRowNumerationNeeded = true;
         List<Contact> contacts = contactService.getAllByTerm(null);
         return getXlsxByteArray(contacts, isRowNumerationNeeded);
     }
@@ -26,7 +26,7 @@ public class XlsxService {
     private byte[] getXlsxByteArray(List<Contact> contacts, boolean isRowNumerationNeeded) throws Exception {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
         ) {
-            fileCreator.createTableFile(
+            fileCreator.writeToStream(
                     contacts,
                     outputStream,
                     isRowNumerationNeeded

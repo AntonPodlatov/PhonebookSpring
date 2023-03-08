@@ -10,10 +10,10 @@ import java.io.OutputStream;
 import java.util.List;
 
 @Component
-public class XlsxTableFileCreator {
-    public void createTableFile(List<? extends ConvertableToXlsxRow> convertableEntities,
-                                OutputStream destinationStream,
-                                boolean isRowNumerationNeeded
+public class XlsxTableWriter {
+    public void writeToStream(List<? extends ConvertableToXlsxRow> convertableEntities,
+                              OutputStream destinationStream,
+                              boolean isRowNumerationNeeded
     ) throws Exception {
         if (convertableEntities.size() == 0) {
             throw new IllegalArgumentException("Список элементов для конвертирования пуст.");

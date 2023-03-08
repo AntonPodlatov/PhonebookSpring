@@ -28,13 +28,13 @@ class ContactServiceTest {
     }
 
     @Test
-    void getAllByTerm() {
+    public void getAllByTerm() {
         List<Contact> contacts = service.getAllByTerm(null);
         Assertions.assertEquals(3, contacts.size());
     }
 
     @Test
-    void addContact() throws NewContactValidationException {
+    public void addContact() throws NewContactValidationException {
         String firstName = "FirstName", lastName = "LastName", phone = "3824672843";
 
         Contact contact = service.addContact(new Contact(firstName, lastName, phone));
@@ -46,7 +46,7 @@ class ContactServiceTest {
     }
 
     @Test
-    void deleteByIds() throws DeleteContactException {
+    public void deleteByIds() throws DeleteContactException {
         List<Contact> contacts = service.getAllByTerm(null);
 
         Contact firstContact = contacts.get(0);
@@ -57,7 +57,7 @@ class ContactServiceTest {
     }
 
     @Test()
-    void deleteExceptionThrownWhenArgIsNull() {
+    public void deleteExceptionThrownWhenArgIsNull() {
         DeleteContactException thrown = Assertions
                 .assertThrows(
                         DeleteContactException.class,
@@ -67,7 +67,7 @@ class ContactServiceTest {
     }
 
     @Test()
-    void deleteExceptionThrownWhenArgListIsEmpty() {
+    public void deleteExceptionThrownWhenArgListIsEmpty() {
         DeleteContactException thrown = Assertions
                 .assertThrows(
                         DeleteContactException.class,
@@ -77,7 +77,7 @@ class ContactServiceTest {
     }
 
     @Test()
-    void addContactExceptionThrownWhenFirstNameIsNull() {
+    public void addContactExceptionThrownWhenFirstNameIsNull() {
         Contact contact = new Contact();
         NewContactValidationException thrown = Assertions
                 .assertThrows(
