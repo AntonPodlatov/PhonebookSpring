@@ -35,11 +35,10 @@ public class ContactDto {
 
     @Override
     public String toString() {
-        return "ContactDto{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+        return "{id=" + id +
+                ", firstName='" + firstName +
+                "', lastName='" + lastName +
+                "', phone='" + phone +
+                "'}";
     }
 }

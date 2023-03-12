@@ -12,9 +12,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class RandomContactRemoveScheduler {
+    private final static Logger log = LoggerFactory.getLogger(RandomContactRemoveScheduler.class);
+
     private final ContactService service;
-    private final static Logger log = LoggerFactory
-            .getLogger(RandomContactRemoveScheduler.class);
 
     public RandomContactRemoveScheduler(ContactService service) {
         this.service = service;
@@ -30,7 +30,8 @@ public class RandomContactRemoveScheduler {
             return;
         }
 
-        int randomContactIndex = ThreadLocalRandom.current()
+        int randomContactIndex = ThreadLocalRandom
+                .current()
                 .nextInt(0, contactsCount);
 
         Contact removed = contacts.remove(randomContactIndex);

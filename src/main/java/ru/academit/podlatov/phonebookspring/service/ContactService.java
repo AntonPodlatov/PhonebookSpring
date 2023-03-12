@@ -20,36 +20,7 @@ public class ContactService {
         this.contactDao = contactDao;
     }
 
-    private boolean isExistContactWithPhone(String phone) {
-        return contactDao.getAll().stream()
-                .anyMatch(contact -> contact.getPhone().equals(phone));
-    }
-
-    private void validateContact(Contact contact) throws NewContactValidationException {
-        List<String> validationMessages = new ArrayList<>();
-
-        if (contact.getFirstName() == null || contact.getFirstName().isEmpty()) {
-            validationMessages.add(NewContactValidationMessages.NO_FIRST_NAME);
-        }
-
-        if (contact.getLastName() == null || contact.getLastName().isEmpty()) {
-            validationMessages.add(NewContactValidationMessages.NO_LAST_NAME);
-        }
-
-        if (contact.getPhone() == null || contact.getPhone().isEmpty()) {
-            validationMessages.add(NewContactValidationMessages.NO_PHONE);
-        }
-
-        if (isExistContactWithPhone(contact.getPhone())) {
-            validationMessages.add(NewContactValidationMessages.PHONE_MUST_NOT_DUPLICATES);
-        }
-
-        if (validationMessages.size() > 0) {
-            throw new NewContactValidationException("NewContactValidation error", validationMessages);
-        }
-    }
-
-    public Contact addContact(Contact contact) throws NewContactValidationException {
+    public Contact addContact(Contact contact) {
         validateContact(contact);
         return contactDao.add(contact);
     }
@@ -58,7 +29,12 @@ public class ContactService {
         return contactDao.getAllByTerm(term);
     }
 
-    public DeleteResponse deleteByIds(List<Integer> ids) throws DeleteContactException {
+    private boolean isExistContactWithPhone(String phone) {
+        return contactDao.getAll().stream()
+                .anyMatch(contact -> contact.getPhone().equals(phone));
+    }
+
+    public DeleteResponse deleteByIds(List<Integer> ids) {
         if (ids == null) {
             throw new DeleteContactException(DeleteContactMessages.NO_ID_LIST);
         }
@@ -79,5 +55,29 @@ public class ContactService {
 
         response.setRemovedContactsIds(removedContactsIds);
         return response;
+    }
+
+    private void validateContact(Contact contact) {
+        List<String> validationMessages = new ArrayList<>();
+
+        if (contact.getFirstName() == null || contact.getFirstName().isEmpty()) {
+            validationMessages.add(NewContactValidationMessages.NO_FIRST_NAME);
+        }
+
+        if (contact.getLastName() == null || contact.getLastName().isEmpty()) {
+            validationMessages.add(NewContactValidationMessages.NO_LAST_NAME);
+        }
+
+        if (contact.getPhone() == null || contact.getPhone().isEmpty()) {
+            validationMessages.add(NewContactValidationMessages.NO_PHONE);
+        }
+
+        if (isExistContactWithPhone(contact.getPhone())) {
+            validationMessages.add(NewContactValidationMessages.PHONE_MUST_NOT_DUPLICATES);
+        }
+
+        if (validationMessages.size() > 0) {
+            throw new NewContactValidationException("New contact validation error.", validationMessages);
+        }
     }
 }

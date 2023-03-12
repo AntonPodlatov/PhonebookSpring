@@ -2,7 +2,7 @@ package ru.academit.podlatov.phonebookspring.service.exception.newcontactvalidat
 
 import java.util.List;
 
-public class NewContactValidationException extends Exception {
+public class NewContactValidationException extends RuntimeException {
     private final List<String> validationMessages;
 
     public NewContactValidationException(String message, List<String> validationMessages) {

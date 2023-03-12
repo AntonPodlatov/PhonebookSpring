@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/phoneBook/rest/api/v1")
+@RequestMapping("/phonebook/rest/api/v1")
 public class PhoneBookController {
     private static final Logger logger = LoggerFactory.getLogger(PhoneBookController.class);
 
@@ -33,13 +33,13 @@ public class PhoneBookController {
 
     @GetMapping("contacts")
     public List<ContactDto> getAllContacts(@RequestParam(required = false) String filter) {
-        logger.info("called method getAllContacts");
+        log(filter);
         return toDtoConverter.convert(contactService.getAllByTerm(filter));
     }
 
     @PostMapping("contacts")
     public ContactDto addOneContact(@RequestBody ContactDto contactDto) throws NewContactValidationException {
-        logger.info("called method addOneContact");
+        log(contactDto);
         var contactFromReq = toContactConverter.convert(contactDto);
         var addedContact = contactService.addContact(contactFromReq);
         return toDtoConverter.convert(addedContact);
@@ -47,8 +47,23 @@ public class PhoneBookController {
 
     @DeleteMapping("contacts")
     public DeleteResponse removeContactsList(@RequestParam List<Integer> ids) throws DeleteContactException {
-        logger.info("called method removeContactsList");
-        System.out.println(ids);
+        log(ids);
         return contactService.deleteByIds(ids);
+    }
+
+    private void log(Object methodArg) {
+        if (methodArg == null) {
+            logger.info("Called method " + getCalledMethodName() + " with no arg");
+        } else {
+            String argString = methodArg.toString().isBlank() ?
+                    "'empty string'" : methodArg.toString();
+            logger.info("Called method " + getCalledMethodName() + " with arg: " + argString);
+        }
+    }
+
+    private String getCalledMethodName() {
+        return Thread.currentThread()
+                .getStackTrace()[3]
+                .getMethodName();
     }
 }

@@ -1,4 +1,4 @@
-package ru.academit.podlatov.phonebookspring.service.workbookcreator;
+package ru.academit.podlatov.phonebookspring.service.xlsxtablewriter;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -14,7 +14,7 @@ public class XlsxTableWriter {
     public void writeToStream(List<? extends ConvertableToXlsxRow> convertableEntities,
                               OutputStream destinationStream,
                               boolean isRowNumerationNeeded
-    ) throws Exception {
+    ) {
         if (convertableEntities.size() == 0) {
             throw new IllegalArgumentException("Список элементов для конвертирования пуст.");
         }
@@ -40,7 +40,7 @@ public class XlsxTableWriter {
         } catch (Exception e) {
             e.printStackTrace();
             String message = e.getMessage() == null ? "Ошибка при создании xlsx файла." : e.getMessage();
-            throw new Exception(message);
+            throw new RuntimeException(message);
         }
     }
 
@@ -77,7 +77,6 @@ public class XlsxTableWriter {
 
     private static void autosizeColumns(XSSFSheet sheet) {
         int columnsCount = sheet.getRow(0).getPhysicalNumberOfCells();
-
         for (int i = 0; i < columnsCount; i++) {
             sheet.autoSizeColumn(i);
         }

@@ -12,7 +12,7 @@ new Vue({
     el: "#app",
 
     data: {
-        api: "/phoneBook/rest/api/v1",
+        api: "/phonebook/rest/api/v1",
         validation: false,
         firstName: "",
         lastName: "",

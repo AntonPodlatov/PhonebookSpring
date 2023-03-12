@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.academit.podlatov.phonebookspring.model.Contact;
-import ru.academit.podlatov.phonebookspring.service.workbookcreator.XlsxTableWriter;
+import ru.academit.podlatov.phonebookspring.service.xlsxtablewriter.XlsxTableWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
