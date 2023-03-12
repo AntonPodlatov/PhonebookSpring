@@ -17,7 +17,7 @@ import java.util.List;
 public class ErrorController {
     public static final Logger log = LoggerFactory.getLogger(ErrorController.class);
 
-    @ExceptionHandler
+    @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorInfo> processException(HttpMessageNotReadableException e) {
         String message = e.getMessage();
         log.error(message);
@@ -28,7 +28,7 @@ public class ErrorController {
                 .body(new ErrorInfo("Bad request: " + message + "."));
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(NewContactValidationException.class)
     public ResponseEntity<ErrorInfo> processException(NewContactValidationException e) {
         List<String> messages = e.getMessages();
         log.error(messages.toString());
