@@ -1,7 +1,9 @@
 package ru.academit.podlatov.phonebookspring.service;
 
 import org.springframework.stereotype.Service;
-import ru.academit.podlatov.phonebookspring.model.Contact;
+import ru.academit.podlatov.phonebookspring.converter.impl.ContactToDtoConverterImpl;
+import ru.academit.podlatov.phonebookspring.dto.ContactDto;
+import ru.academit.podlatov.phonebookspring.model.ConvertableToXlsxRow;
 import ru.academit.podlatov.phonebookspring.service.xlsxtablewriter.XlsxTableWriter;
 
 import java.io.ByteArrayOutputStream;
@@ -12,22 +14,33 @@ import java.util.List;
 public class XlsxService {
     private final XlsxTableWriter fileCreator;
     private final ContactService contactService;
+    private final ContactToDtoConverterImpl converter;
 
-    public XlsxService(ContactService contactService, XlsxTableWriter fileCreator) {
-        this.fileCreator = fileCreator;
+    public XlsxService(XlsxTableWriter fileCreator,
+                       ContactService contactService,
+                       ContactToDtoConverterImpl converter) {
         this.contactService = contactService;
+        this.fileCreator = fileCreator;
+        this.converter = converter;
     }
 
     public byte[] getAllContactsXlsxByteArray() {
         boolean isRowNumerationNeeded = true;
-        List<Contact> contacts = contactService.getAllByTerm(null);
-        return getXlsxByteArray(contacts, isRowNumerationNeeded);
+
+        List<ContactDto> convertableContacts = converter
+                .convert(contactService.getAllByTerm(null));
+
+        return getXlsxByteArray(
+                convertableContacts,
+                isRowNumerationNeeded);
     }
 
-    private byte[] getXlsxByteArray(List<Contact> contacts, boolean isRowNumerationNeeded)  {
+    private byte[] getXlsxByteArray(List<? extends ConvertableToXlsxRow> convertableContacts,
+                                    boolean isRowNumerationNeeded
+    ) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             fileCreator.writeToStream(
-                    contacts,
+                    convertableContacts,
                     outputStream,
                     isRowNumerationNeeded
             );

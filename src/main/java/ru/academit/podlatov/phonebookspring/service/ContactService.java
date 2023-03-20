@@ -1,7 +1,7 @@
 package ru.academit.podlatov.phonebookspring.service;
 
 import org.springframework.stereotype.Service;
-import ru.academit.podlatov.phonebookspring.dao.ContactDao;
+import ru.academit.podlatov.phonebookspring.dao.ContactDaoImpl;
 import ru.academit.podlatov.phonebookspring.model.Contact;
 import ru.academit.podlatov.phonebookspring.model.DeleteResponse;
 import ru.academit.podlatov.phonebookspring.service.exception.deletecontact.DeleteContactException;
@@ -14,9 +14,9 @@ import java.util.List;
 
 @Service
 public class ContactService {
-    private final ContactDao contactDao;
+    private final ContactDaoImpl contactDao;
 
-    public ContactService(ContactDao contactDao) {
+    public ContactService(ContactDaoImpl contactDao) {
         this.contactDao = contactDao;
     }
 
@@ -25,16 +25,16 @@ public class ContactService {
         return contactDao.add(contact);
     }
 
-    public List<Contact> getAllByTerm(String term) {
-        return contactDao.getAllByTerm(term);
+    public List<Contact> getAllByTerm(String filter) {
+        return contactDao.getByFilter(filter);
     }
 
     private boolean isExistContactWithPhone(String phone) {
-        return contactDao.getAll().stream()
+        return contactDao.getByFilter(null).stream()
                 .anyMatch(contact -> contact.getPhone().equals(phone));
     }
 
-    public DeleteResponse deleteByIds(List<Integer> ids) {
+    public DeleteResponse deleteByIds(List<Long> ids) {
         if (ids == null) {
             throw new DeleteContactException(DeleteContactMessages.NO_ID_LIST);
         }
@@ -44,7 +44,7 @@ public class ContactService {
         }
 
         DeleteResponse response = new DeleteResponse();
-        List<Integer> removedContactsIds = contactDao.delete(ids);
+        List<Long> removedContactsIds = contactDao.deleteByIds(ids);
         if (removedContactsIds.size() == 0) {
             throw new DeleteContactException(DeleteContactMessages.NO_SUCH_CONTACTS);
         }

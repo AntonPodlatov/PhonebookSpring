@@ -1,20 +1,28 @@
 package ru.academit.podlatov.phonebookspring.model;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 
-public class Contact implements ConvertableToXlsxRow {
-    private int id;
+@Entity
+@Table(name = "contact")
+public class Contact {
+    @Id
+    @Column
+    @GeneratedValue
+    private Long id;
+
+    @Column
     private String firstName;
+    @Column
     private String lastName;
+    @Column
     private String phone;
+    @Column
     private boolean important;
 
-    public Contact(int id, String firstName, String lastName, String phone) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-    }
+    @Column
+    private boolean isDeleted;
 
     public Contact(String firstName, String lastName, String phone) {
         this.firstName = firstName;
@@ -25,43 +33,57 @@ public class Contact implements ConvertableToXlsxRow {
     public Contact() {
     }
 
-    public int getId() {
-        return id;
+    public void setImportant(boolean important) {
+        this.important = important;
     }
 
-    public void setId(int id) {
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
+    public long getId() {
+        return id;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    @Override
-    public List<String> getFieldsValues() {
-        return List.of(String.valueOf(id), firstName, lastName, phone, important ? "Да" : "Нет");
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public  List<String> getFieldsNames() {
-        return List.of("Id", "Имя", "Фамилия", "Телефон", "Важный");
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public boolean isImportant() {
+        return important;
     }
 
     @Override
     public String toString() {
-        return "Contact{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", important=" + important +
-                '}';
+        return "Contact{id=%d, firstName='%s', lastName='%s', phone='%s, important=%s}"
+                .formatted(id, firstName, lastName, phone, important);
     }
 }

@@ -46,7 +46,7 @@ public class PhoneBookController {
     }
 
     @DeleteMapping("contacts")
-    public DeleteResponse removeContactsList(@RequestParam List<Integer> ids) throws DeleteContactException {
+    public DeleteResponse removeContactsList(@RequestParam List<Long> ids) throws DeleteContactException {
         log(ids);
         return contactService.deleteByIds(ids);
     }

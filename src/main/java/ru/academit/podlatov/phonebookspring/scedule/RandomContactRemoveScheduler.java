@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.academit.podlatov.phonebookspring.model.Contact;
+import ru.academit.podlatov.phonebookspring.model.DeleteResponse;
 import ru.academit.podlatov.phonebookspring.service.ContactService;
 
 import java.util.List;
@@ -34,7 +35,10 @@ public class RandomContactRemoveScheduler {
                 .current()
                 .nextInt(0, contactsCount);
 
-        Contact removed = contacts.remove(randomContactIndex);
-        log.info("removed: " + removed);
+        DeleteResponse removed = service.deleteByIds(List.of(
+                contacts.get(randomContactIndex).getId()
+        ));
+        log.info("removed: contact{%s}"
+                .formatted(removed.getRemovedContactsIds()));
     }
 }

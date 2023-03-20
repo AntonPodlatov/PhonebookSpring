@@ -12,10 +12,9 @@ public class DtoToContactConverterImpl implements DtoToContactConverter {
     @Override
     public Contact convert(ContactDto contactDto) {
         return new Contact(
-                        contactDto.getId(),
-                        contactDto.getFirstName(),
-                        contactDto.getLastName(),
-                        contactDto.getPhone());
+                contactDto.getFirstName(),
+                contactDto.getLastName(),
+                contactDto.getPhone());
     }
 
     @Override

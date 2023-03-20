@@ -1,24 +1,27 @@
 package ru.academit.podlatov.phonebookspring.dto;
 
-public class ContactDto {
-    private int id;
+import ru.academit.podlatov.phonebookspring.model.ConvertableToXlsxRow;
+
+import java.util.List;
+
+public class ContactDto implements ConvertableToXlsxRow {
+    private long id;
     private final String firstName;
     private final String lastName;
     private final String phone;
+    private final boolean important;
 
-    public ContactDto(int id, String firstName, String lastName, String phone) {
+    public ContactDto(long id, String firstName, String lastName, String phone, boolean important) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.important = important;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
+    public boolean isImportant() {
+        return important;
     }
 
     public String getFirstName() {
@@ -33,12 +36,27 @@ public class ContactDto {
         return phone;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Override
+    public List<String> getFieldsValues() {
+        return List.of(String.valueOf(id), firstName, lastName, phone, important ? "Да" : "Нет");
+    }
+
+    @Override
+    public List<String> getFieldsNames() {
+        return List.of("Id", "Имя", "Фамилия", "Телефон", "Важный");
+    }
+
     @Override
     public String toString() {
-        return "{id=" + id +
-                ", firstName='" + firstName +
-                "', lastName='" + lastName +
-                "', phone='" + phone +
-                "'}";
+        return "Contact{id=%d, firstName='%s', lastName='%s', phone='%s, important=%s}"
+                .formatted(id, firstName, lastName, phone, important);
     }
 }

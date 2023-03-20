@@ -143,6 +143,10 @@ new Vue({
         },
 
         downloadAllContactsXlsx() {
+            if(this.rows.length<1){
+                this.showWarnings(["Контактов нет."]);
+                return;
+            }
             window.location.href = this.api + "/xlsx/contacts";
         }
     },

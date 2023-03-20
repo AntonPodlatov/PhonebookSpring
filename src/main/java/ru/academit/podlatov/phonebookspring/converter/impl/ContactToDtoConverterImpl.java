@@ -9,13 +9,15 @@ import java.util.List;
 
 @Service
 public class ContactToDtoConverterImpl implements ContactToDtoConverter {
+
     @Override
     public ContactDto convert(Contact contact) {
         return new ContactDto(
-                        contact.getId(),
-                        contact.getFirstName(),
-                        contact.getLastName(),
-                        contact.getPhone());
+                contact.getId(),
+                contact.getFirstName(),
+                contact.getLastName(),
+                contact.getPhone(),
+                contact.isImportant());
     }
 
     @Override

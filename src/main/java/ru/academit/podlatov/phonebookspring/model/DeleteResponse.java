@@ -4,7 +4,7 @@ import java.util.List;
 
 public class DeleteResponse {
     private String message;
-    private List<Integer> removedContactsIds;
+    private List<Long> removedContactsIds;
 
 
     public String getMessage() {
@@ -15,11 +15,11 @@ public class DeleteResponse {
         this.message = message;
     }
 
-    public List<Integer> getRemovedContactsIds() {
+    public List<Long> getRemovedContactsIds() {
         return removedContactsIds;
     }
 
-    public void setRemovedContactsIds(List<Integer> removedContactsIds) {
+    public void setRemovedContactsIds(List<Long> removedContactsIds) {
         this.removedContactsIds = removedContactsIds;
     }
 }
