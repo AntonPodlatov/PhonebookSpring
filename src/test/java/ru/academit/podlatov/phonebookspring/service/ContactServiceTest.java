@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.academit.podlatov.phonebookspring.model.Contact;
+import ru.academit.podlatov.phonebookspring.model.contact.Contact;
 import ru.academit.podlatov.phonebookspring.model.DeleteResponse;
 import ru.academit.podlatov.phonebookspring.service.exception.deletecontact.DeleteContactException;
 import ru.academit.podlatov.phonebookspring.service.exception.deletecontact.DeleteContactMessages;
@@ -15,6 +15,8 @@ import ru.academit.podlatov.phonebookspring.service.exception.newcontactvalidati
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 @SpringBootTest
@@ -29,7 +31,7 @@ class ContactServiceTest {
 
     @Test
     public void getAllByTerm() {
-        List<Contact> contacts = service.getAllByTerm(null);
+        List<Contact> contacts = service.getAllContactsByTerm(null);
         Assertions.assertEquals(3, contacts.size());
     }
 
@@ -39,7 +41,7 @@ class ContactServiceTest {
 
         Contact contact = service.addContact(new Contact(firstName, lastName, phone));
 
-        Assertions.assertEquals(contact.getId(), service.getAllByTerm(null).size());
+        Assertions.assertEquals(contact.getId(), service.getAllContactsByTerm(null).size());
         Assertions.assertEquals(contact.getFirstName(), firstName);
         Assertions.assertEquals(contact.getLastName(), lastName);
         Assertions.assertEquals(contact.getPhone(), phone);
@@ -47,12 +49,12 @@ class ContactServiceTest {
 
     @Test
     public void deleteByIds() throws DeleteContactException {
-        List<Contact> contacts = service.getAllByTerm(null);
+        List<Contact> contacts = service.getAllContactsByTerm(null);
 
         Contact firstContact = contacts.get(0);
-        DeleteResponse response = service.deleteByIds(List.of(firstContact.getId()));
+        DeleteResponse response = service.deleteContactsByIds(Set.of(firstContact.getId()));
 
-        Assertions.assertEquals(response.getRemovedContactsIds().get(0), firstContact.getId());
+        Assertions.assertEquals(response.getRemovedContactsIds().toArray()[0], firstContact.getId());
         Assertions.assertNull(response.getMessage());
     }
 
@@ -61,7 +63,7 @@ class ContactServiceTest {
         DeleteContactException thrown = Assertions
                 .assertThrows(
                         DeleteContactException.class,
-                        () -> service.deleteByIds(null));
+                        () -> service.deleteContactsByIds(null));
 
         Assertions.assertEquals(DeleteContactMessages.NO_ID_LIST, thrown.getMessage());
     }
@@ -71,7 +73,7 @@ class ContactServiceTest {
         DeleteContactException thrown = Assertions
                 .assertThrows(
                         DeleteContactException.class,
-                        () -> service.deleteByIds(new ArrayList<>()));
+                        () -> service.deleteContactsByIds(new TreeSet<>()));
 
         Assertions.assertEquals(DeleteContactMessages.ID_LIST_IS_EMPTY, thrown.getMessage());
     }

@@ -3,8 +3,8 @@ package ru.academit.podlatov.phonebookspring.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import ru.academit.podlatov.phonebookspring.converter.ContactToDtoConverter;
-import ru.academit.podlatov.phonebookspring.converter.DtoToContactConverter;
+import ru.academit.podlatov.phonebookspring.converter.contact.ContactToDtoConverter;
+import ru.academit.podlatov.phonebookspring.converter.contact.DtoToContactConverter;
 import ru.academit.podlatov.phonebookspring.dto.ContactDto;
 import ru.academit.podlatov.phonebookspring.model.DeleteResponse;
 import ru.academit.podlatov.phonebookspring.service.ContactService;
@@ -12,6 +12,7 @@ import ru.academit.podlatov.phonebookspring.service.exception.deletecontact.Dele
 import ru.academit.podlatov.phonebookspring.service.exception.newcontactvalidation.NewContactValidationException;
 
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -20,35 +21,41 @@ public class PhoneBookController {
     private static final Logger logger = LoggerFactory.getLogger(PhoneBookController.class);
 
     private final ContactService contactService;
-    private final ContactToDtoConverter toDtoConverter;
-    private final DtoToContactConverter toContactConverter;
+    private final ContactToDtoConverter contactToDtoConverter;
+    private final DtoToContactConverter dtoToContactConverter;
 
     public PhoneBookController(ContactService contactService,
-                               ContactToDtoConverter toDtoConverter,
-                               DtoToContactConverter toContactConverter) {
+                               ContactToDtoConverter contactToDtoConverter,
+                               DtoToContactConverter dtoToContactConverter) {
+        this.contactToDtoConverter = contactToDtoConverter;
+        this.dtoToContactConverter = dtoToContactConverter;
         this.contactService = contactService;
-        this.toDtoConverter = toDtoConverter;
-        this.toContactConverter = toContactConverter;
     }
 
     @GetMapping("contacts")
     public List<ContactDto> getAllContacts(@RequestParam(required = false) String filter) {
         log(filter);
-        return toDtoConverter.convert(contactService.getAllByTerm(filter));
+        return contactToDtoConverter.convert(contactService.getAllContactsByTerm(filter));
+    }
+
+    @GetMapping("contacts/{id}")
+    public ContactDto getContactWithCalls(@PathVariable Long id) {
+        log(id);
+        return contactToDtoConverter.convert(contactService.getContactWithCalls(id));
     }
 
     @PostMapping("contacts")
     public ContactDto addOneContact(@RequestBody ContactDto contactDto) throws NewContactValidationException {
         log(contactDto);
-        var contactFromReq = toContactConverter.convert(contactDto);
+        var contactFromReq = dtoToContactConverter.convert(contactDto);
         var addedContact = contactService.addContact(contactFromReq);
-        return toDtoConverter.convert(addedContact);
+        return contactToDtoConverter.convert(addedContact);
     }
 
     @DeleteMapping("contacts")
-    public DeleteResponse removeContactsList(@RequestParam List<Long> ids) throws DeleteContactException {
+    public DeleteResponse removeContactsList(@RequestParam Set<Long> ids) throws DeleteContactException {
         log(ids);
-        return contactService.deleteByIds(ids);
+        return contactService.deleteContactsByIds(ids);
     }
 
     private void log(Object methodArg) {

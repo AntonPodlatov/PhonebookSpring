@@ -4,7 +4,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
-import ru.academit.podlatov.phonebookspring.model.ConvertableToXlsxRow;
+import ru.academit.podlatov.phonebookspring.model.contact.ConvertableToXlsxRow;
 
 import java.io.OutputStream;
 import java.util.List;

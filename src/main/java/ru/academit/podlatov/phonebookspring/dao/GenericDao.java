@@ -3,7 +3,7 @@ package ru.academit.podlatov.phonebookspring.dao;
 import jakarta.transaction.Transactional;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 public interface GenericDao<T, PK extends Serializable> {
     @Transactional
@@ -19,11 +19,5 @@ public interface GenericDao<T, PK extends Serializable> {
     void delete(T t);
 
     @Transactional
-    List<T> getByFilter(String filter);
-
-    @Transactional
-    List<PK> deleteByIds(List<PK> ids);
-
-    @Transactional
-    List<T> getByPhone(String filter);
+    void delete(Set<PK> ids);
 }

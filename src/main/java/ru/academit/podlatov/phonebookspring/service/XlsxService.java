@@ -1,9 +1,9 @@
 package ru.academit.podlatov.phonebookspring.service;
 
 import org.springframework.stereotype.Service;
-import ru.academit.podlatov.phonebookspring.converter.impl.ContactToDtoConverterImpl;
+import ru.academit.podlatov.phonebookspring.converter.contact.ContactToDtoConverterImpl;
 import ru.academit.podlatov.phonebookspring.dto.ContactDto;
-import ru.academit.podlatov.phonebookspring.model.ConvertableToXlsxRow;
+import ru.academit.podlatov.phonebookspring.model.contact.ConvertableToXlsxRow;
 import ru.academit.podlatov.phonebookspring.service.xlsxtablewriter.XlsxTableWriter;
 
 import java.io.ByteArrayOutputStream;
@@ -28,11 +28,9 @@ public class XlsxService {
         boolean isRowNumerationNeeded = true;
 
         List<ContactDto> convertableContacts = converter
-                .convert(contactService.getAllByTerm(null));
+                .convert(contactService.getAllContactsByTerm(null));
 
-        return getXlsxByteArray(
-                convertableContacts,
-                isRowNumerationNeeded);
+        return getXlsxByteArray(convertableContacts, isRowNumerationNeeded);
     }
 
     private byte[] getXlsxByteArray(List<? extends ConvertableToXlsxRow> convertableContacts,

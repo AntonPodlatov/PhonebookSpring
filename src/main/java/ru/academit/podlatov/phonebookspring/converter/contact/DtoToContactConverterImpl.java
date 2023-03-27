@@ -1,9 +1,8 @@
-package ru.academit.podlatov.phonebookspring.converter.impl;
+package ru.academit.podlatov.phonebookspring.converter.contact;
 
 import org.springframework.stereotype.Service;
-import ru.academit.podlatov.phonebookspring.converter.DtoToContactConverter;
 import ru.academit.podlatov.phonebookspring.dto.ContactDto;
-import ru.academit.podlatov.phonebookspring.model.Contact;
+import ru.academit.podlatov.phonebookspring.model.contact.Contact;
 
 import java.util.List;
 

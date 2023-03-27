@@ -1,23 +1,32 @@
 package ru.academit.podlatov.phonebookspring.service;
 
 import org.springframework.stereotype.Service;
-import ru.academit.podlatov.phonebookspring.dao.ContactDaoImpl;
-import ru.academit.podlatov.phonebookspring.model.Contact;
+import ru.academit.podlatov.phonebookspring.dao.calldao.CallDaoImpl;
+import ru.academit.podlatov.phonebookspring.dao.contactdao.ContactDaoImpl;
 import ru.academit.podlatov.phonebookspring.model.DeleteResponse;
+import ru.academit.podlatov.phonebookspring.model.call.Call;
+import ru.academit.podlatov.phonebookspring.model.call.CallDirection;
+import ru.academit.podlatov.phonebookspring.model.contact.Contact;
 import ru.academit.podlatov.phonebookspring.service.exception.deletecontact.DeleteContactException;
 import ru.academit.podlatov.phonebookspring.service.exception.deletecontact.DeleteContactMessages;
 import ru.academit.podlatov.phonebookspring.service.exception.newcontactvalidation.NewContactValidationException;
 import ru.academit.podlatov.phonebookspring.service.exception.newcontactvalidation.NewContactValidationMessages;
 
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ContactService {
     private final ContactDaoImpl contactDao;
+    private final CallDaoImpl callDao;
 
-    public ContactService(ContactDaoImpl contactDao) {
+    public ContactService(ContactDaoImpl contactDao, CallDaoImpl callDao) {
         this.contactDao = contactDao;
+        this.callDao = callDao;
     }
 
     public Contact addContact(Contact contact) {
@@ -25,16 +34,24 @@ public class ContactService {
         return contactDao.add(contact);
     }
 
-    public List<Contact> getAllByTerm(String filter) {
+    public Call addCall(Call call) {
+        validateCall(call);
+        return callDao.add(call);
+    }
+
+    public Contact getContactWithCalls(Long id) {
+        return contactDao.getContactWithCalls(id);
+    }
+
+    public List<Contact> getAllContactsByTerm(String filter) {
         return contactDao.getByFilter(filter);
     }
 
     private boolean isExistContactWithPhone(String phone) {
-        return contactDao.getByFilter(null).stream()
-                .anyMatch(contact -> contact.getPhone().equals(phone));
+        return contactDao.getByPhone(phone).size() > 0;
     }
 
-    public DeleteResponse deleteByIds(List<Long> ids) {
+    public DeleteResponse deleteContactsByIds(Set<Long> ids) {
         if (ids == null) {
             throw new DeleteContactException(DeleteContactMessages.NO_ID_LIST);
         }
@@ -44,7 +61,7 @@ public class ContactService {
         }
 
         DeleteResponse response = new DeleteResponse();
-        List<Long> removedContactsIds = contactDao.deleteByIds(ids);
+        Set<Long> removedContactsIds = contactDao.deleteByIds(ids);
         if (removedContactsIds.size() == 0) {
             throw new DeleteContactException(DeleteContactMessages.NO_SUCH_CONTACTS);
         }
@@ -78,6 +95,12 @@ public class ContactService {
 
         if (validationMessages.size() > 0) {
             throw new NewContactValidationException("New contact validation error.", validationMessages);
+        }
+    }
+
+    private void validateCall(Call call) {
+        if (call.getCallStartTime().after(call.getCallEndTime())) {
+            throw new RuntimeException("Начало звонка не может быть позже его завершения.");
         }
     }
 }

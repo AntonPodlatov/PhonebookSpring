@@ -1,10 +1,10 @@
 package ru.academit.podlatov.phonebookspring.model;
 
-import java.util.List;
+import java.util.Set;
 
 public class DeleteResponse {
     private String message;
-    private List<Long> removedContactsIds;
+    private Set<Long> removedContactsIds;
 
 
     public String getMessage() {
@@ -15,11 +15,11 @@ public class DeleteResponse {
         this.message = message;
     }
 
-    public List<Long> getRemovedContactsIds() {
+    public Set<Long> getRemovedContactsIds() {
         return removedContactsIds;
     }
 
-    public void setRemovedContactsIds(List<Long> removedContactsIds) {
+    public void setRemovedContactsIds(Set<Long> removedContactsIds) {
         this.removedContactsIds = removedContactsIds;
     }
 }

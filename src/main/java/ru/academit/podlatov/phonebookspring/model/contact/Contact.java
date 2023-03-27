@@ -1,8 +1,9 @@
-package ru.academit.podlatov.phonebookspring.model;
+package ru.academit.podlatov.phonebookspring.model.contact;
 
 import jakarta.persistence.*;
+import ru.academit.podlatov.phonebookspring.model.call.Call;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "contact")
@@ -21,8 +22,22 @@ public class Contact {
     @Column
     private boolean important;
 
+    @OneToMany(
+            mappedBy = "contact",
+            cascade = CascadeType.ALL
+    )
+    private Set<Call> calls;
+
     @Column
     private boolean isDeleted;
+
+    public Contact(Long id, String firstName, String lastName, String phone, boolean important) {
+        this.id = id;
+        this.important = important;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+    }
 
     public Contact(String firstName, String lastName, String phone) {
         this.firstName = firstName;
@@ -30,7 +45,19 @@ public class Contact {
         this.phone = phone;
     }
 
+    public Contact(Long id) {
+        this.id = id;
+    }
+
     public Contact() {
+    }
+
+    public Set<Call> getCalls() {
+        return calls;
+    }
+
+    public void setCalls(Set<Call> calls) {
+        this.calls = calls;
     }
 
     public void setImportant(boolean important) {

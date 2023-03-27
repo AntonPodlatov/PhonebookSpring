@@ -1,4 +1,4 @@
-package ru.academit.podlatov.phonebookspring.model;
+package ru.academit.podlatov.phonebookspring.model.contact;
 
 import java.util.List;
 

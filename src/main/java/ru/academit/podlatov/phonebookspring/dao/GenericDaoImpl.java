@@ -2,16 +2,16 @@ package ru.academit.podlatov.phonebookspring.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Transactional
 public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T, PK> {
-
     @PersistenceContext
     protected EntityManager entityManager;
 
@@ -47,43 +47,19 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 
     @Override
     @Transactional
-    public List<T> getByFilter(String filter) {
-        TypedQuery<T> query;
-        String name = type.getName().substring(type.getName().lastIndexOf('.'));
-
-        String qs = "from Contact c where c.isDeleted = false";
-        if (filter == null) {
-            query = entityManager.createQuery(qs, type);
-        } else {
-            query = entityManager
-                    .createQuery(qs + "and c.phone like :filter or c.firstName like :filter or c.lastName like :filter", type)
-                    .setParameter("filter", "%" + filter + "%");
-        }
-
-        return query.getResultList();
-    }
-
-    @Override
-    @Transactional
-    public List<PK> deleteByIds(List<PK> ids) {
+    public void delete(Set<PK> ids) {
         if (ids == null) {
             throw new IllegalArgumentException("ids is null");
         }
-        Query query = entityManager
-                .createNativeQuery("UPDATE Contact c set isDeleted = true where c.id in :ids returning id")
-                .setParameter("ids", ids);
 
-        return (List<PK>) query.getResultList();
-    }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(type);
+        Root<T> root = criteriaUpdate.from(type);
 
-    @Override
-    public List<T> getByPhone(String filter) {
-        if (filter == null) {
-            throw new IllegalArgumentException("Нужна строка-фильтр для номера телефона");
-        }
-        var qs = "SELECT c FROM Contact c WHERE c.isDeleted = false and c.phone = :filter";
-        return entityManager.createQuery(qs, type)
-                .setParameter("filter", filter)
-                .getResultList();
+        criteriaUpdate.where(root.get("id").in(ids))
+                .set(root.get("isDeleted"), true);
+
+        entityManager.createQuery(criteriaUpdate)
+                .executeUpdate();
     }
 }

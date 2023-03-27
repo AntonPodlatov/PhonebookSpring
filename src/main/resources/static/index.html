@@ -57,6 +57,43 @@
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" id="contactDetailedWindow" ref="contactDetailedWindow"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {{`${detailedContact.firstName} ${detailedContact.lastName} ${detailedContact.phone}`}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered calls-table"
+                           v-if="detailedContact.calls?.length >0">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Входящий/Исходящий</th>
+                            <th>Начало</th>
+                            <th>Завершение</th>
+                            <th>Продолжительность</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(call, index) in detailedContact.calls">
+                            <td>{{index + 1}}</td>
+                            <td>{{call.direction === 'INCOMING' ? 'Входящий' : 'Исходящий'}}</td>
+                            <td>{{new Date(call.start).toLocaleString()}}</td>
+                            <td>{{new Date(call.end).toLocaleString()}}</td>
+                            <td>{{convertTimeFromSeconds(call.durationInSeconds)}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div v-else>Звонков нет</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="filter-container">
         <label class="mr-1">
             Введите текст:
@@ -65,7 +102,7 @@
         <button class="btn btn-primary" @click="filter()">Отфильтровать</button>
         <button class="btn btn-primary" @click="resetFilter()">Сбросить фильтр</button>
     </div>
-    <table class="table table-bordered contact-table">
+    <table class="table table-bordered contact-table table-hover">
         <thead>
         <tr>
             <th>
@@ -85,14 +122,16 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="row in rows">
+        <tr v-for="row in rows"
+            style="cursor: pointer;"
+            @click="showContactDetailed(row)">
             <template v-if="row.shown">
-                <td>
+                <td @click.prevent.stop>
                     <label class="select-me-label">
-                        <input type="checkbox"
+                        <input @click.stop
+                               type="checkbox"
                                class="select-me"
-                               v-model="row.checked"
-                        />
+                               v-model="row.checked"/>
                     </label>
                 </td>
                 <td v-text="row.number"></td>
@@ -102,8 +141,7 @@
                 <td>
                     <button type="button"
                             class="btn btn-primary"
-                            @click="showRemovingDialog(row)">
-                        Удалить
+                            @click.stop="showRemovingDialog(row)">Удалить
                     </button>
                 </td>
             </template>
@@ -113,14 +151,12 @@
 
     <button type="button"
             class="btn btn-primary"
-            @click="showRemovingDialog()">
-        Удалить выбранные
+            @click="showRemovingDialog()">Удалить выбранные
     </button>
 
     <button type="button"
             class="btn btn-primary"
-            @click="downloadAllContactsXlsx()">
-        Скачать всю телефонную книгу
+            @click="downloadAllContactsXlsx()">Скачать всю телефонную книгу
     </button>
 
     <form class="form">

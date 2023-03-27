@@ -85,6 +85,10 @@ input[type=number] {
     visibility: hidden;
 }
 
+.calls-table {
+    margin: 0 auto; /* or margin: 0 auto 0 auto */
+}
+
 [v-cloak] {
     display: none;
 }

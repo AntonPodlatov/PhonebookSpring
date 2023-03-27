@@ -21,7 +21,8 @@ new Vue({
         filterValue: "",
         isAllChecked: false,
         contactsForRemove: [],
-        warningsList: []
+        warningsList: [],
+        detailedContact: {}
     },
 
     methods: {
@@ -143,11 +144,39 @@ new Vue({
         },
 
         downloadAllContactsXlsx() {
-            if(this.rows.length<1){
+            if (this.rows.length < 1) {
                 this.showWarnings(["Контактов нет."]);
                 return;
             }
             window.location.href = this.api + "/xlsx/contacts";
+        },
+
+        convertTimeFromSeconds(secondsCount){
+           return new Date(secondsCount * 1000).toISOString().slice(11, 19);
+        },
+
+        showContactDetailed(row) {
+            if (window.getSelection().toString()) {
+                return;
+            }
+
+            var path = `${this.api}/contacts/${row.id}`;
+
+            $.get(path)
+                .done(detailedContact => {
+                    console.log(detailedContact);
+                    this.detailedContact = detailedContact;
+
+                    var contactDetailedWindow = new bootstrap.Modal(
+                        this.$refs.contactDetailedWindow, {
+                            backdrop: true,
+                            keyboard: true,
+                            focus: true
+                        }
+                    );
+                    contactDetailedWindow.show();
+                }).fail(ajaxRequest => this.showWarnings(ajaxRequest.responseJSON.messages))
+                .always();
         }
     },
 
