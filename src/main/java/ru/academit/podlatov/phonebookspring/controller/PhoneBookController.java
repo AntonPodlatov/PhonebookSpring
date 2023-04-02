@@ -3,11 +3,11 @@ package ru.academit.podlatov.phonebookspring.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import ru.academit.podlatov.phonebookspring.converter.contact.ContactToDtoConverter;
-import ru.academit.podlatov.phonebookspring.converter.contact.DtoToContactConverter;
 import ru.academit.podlatov.phonebookspring.dto.ContactDto;
 import ru.academit.podlatov.phonebookspring.model.DeleteResponse;
 import ru.academit.podlatov.phonebookspring.service.ContactService;
+import ru.academit.podlatov.phonebookspring.converter.contact.ContactToDtoConverter;
+import ru.academit.podlatov.phonebookspring.converter.contact.DtoToContactConverter;
 import ru.academit.podlatov.phonebookspring.service.exception.deletecontact.DeleteContactException;
 import ru.academit.podlatov.phonebookspring.service.exception.newcontactvalidation.NewContactValidationException;
 

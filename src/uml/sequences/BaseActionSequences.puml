@@ -1,0 +1,69 @@
+@startuml
+actor User
+participant Browser
+participant Server
+database DB
+
+== Open Phonebook full flow==
+User->Browser: Action - Open Phonebook main page
+Browser->Server: GET REQUEST (text/html) to root_application_url
+Server->Browser: RESPONSE main page html doc
+loop
+   Browser -> Server: GET REQUEST js and css files specified in document
+   Server -> Browser: RESPONSE js and css files
+end
+Browser->Browser: Executing js - call loadData(filter); with filter = ""
+Browser->Server: GET REQUEST api_url/contact?filter=
+Server->DB: SELECT all not deleted contacts without related calls column
+DB->Server: contacts rows
+Server ->Browser: RESPONSE JSON array with contacts objects
+Browser->Browser: View update
+
+== View contacts flow==
+User->Browser: Action - Input string-filter and click filter button
+Browser->Browser: Executing js - call loadData(filter); with filter= "user_input"
+Browser->Server: GET REQUEST api_url/contact?filter=user_input
+Server->DB: SELECT not deleted contacts \n containing "user_input" in some column without related calls column
+DB->Server: contacts rows
+Server ->Browser: RESPONSE JSON array with contacts objects
+Browser->Browser: View update
+
+== Add contact flow==
+User->Browser: Action - Input phone,names and click filter button
+Browser->Browser: Executing js - call addContact();
+Browser->Server: POST REQUEST api_url/contact with contact in request body
+Server->Server: contact validation
+    alt VALIDATION SUCCESS
+        Server->DB: SELECT not deleted contacts \n containing "user_input" in some column without related calls column
+        DB->Server: contacts rows
+        Server ->Browser: RESPONSE JSON array with contacts objects
+    else VALIDATION FAILURE
+        Server ->Browser: RESPONSE JSON with error
+    end
+Browser->Browser: View update
+
+== Delete contact flow==
+opt
+User->Browser: Action - select multiple contacts \n and click delete button
+User->Browser: Action - click single contact delete button
+end
+
+Browser->Browser: multiple or single map to ids list and \n Executing js - call deleteContacts(ids);
+Browser->Server: DELETE REQUEST api_url/contact?ids={ids}
+Server->Server: ids validation
+opt
+Server ->Server: ids is NULL
+Server ->Server: ids is empty
+Server ->Browser: RESPONSE JSON with error
+end
+Server -> DB: Delete contacts where id in ids and related calls
+DB ->Server: removed contacts rows
+ alt SUCCESS: All contacts deleted
+             Server->Browser: removed Ids JSON
+ else SUCCESS: Not all contacts deleted
+             Server->Browser: removed Ids JSON with message about incomplete removal
+ else FAILURE contacts not found
+              Server->Browser: error JSON
+ end
+Browser->Browser: View update
+@enduml

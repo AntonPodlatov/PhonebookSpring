@@ -27,7 +27,7 @@ new Vue({
 
     methods: {
         checkAllCheckboxes() {
-            var isAllChecked = this.isAllChecked;
+            let isAllChecked = this.isAllChecked;
             this.rows.forEach(row => row.checked = isAllChecked);
         },
 
@@ -124,13 +124,24 @@ new Vue({
                 this.contactsForRemove = [row];
             }
 
-            var modal = new bootstrap.Modal(this.$refs.modalWindow, {backdrop: true, keyboard: true, focus: true});
+            var modal = new bootstrap.Modal(this.$refs.modalWindow, {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+            });
+
             modal.show();
         },
 
         showWarnings(warningsList) {
             this.warningsList = warningsList;
-            var warning = new bootstrap.Modal(this.$refs.warningWindow, {backdrop: true, keyboard: true, focus: true});
+
+            var warning = new bootstrap.Modal(this.$refs.warningWindow, {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+            });
+
             warning.show();
         },
 
@@ -151,8 +162,8 @@ new Vue({
             window.location.href = this.api + "/xlsx/contacts";
         },
 
-        convertTimeFromSeconds(secondsCount){
-           return new Date(secondsCount * 1000).toISOString().slice(11, 19);
+        convertTimeFromSeconds(secondsCount) {
+            return new Date(secondsCount * 1000).toISOString().slice(11, 19);
         },
 
         showContactDetailed(row) {

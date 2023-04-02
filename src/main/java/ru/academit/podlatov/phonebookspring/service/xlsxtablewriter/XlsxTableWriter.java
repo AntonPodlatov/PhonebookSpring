@@ -23,19 +23,10 @@ public class XlsxTableWriter {
             XSSFSheet sheet = workbook.createSheet();
 
             Integer rowNumber = 0;
-
-            createHeaders(
-                    sheet.createRow(rowNumber++),
-                    convertableEntities.get(0).getFieldsNames(),
-                    isRowNumerationNeeded
-            );
-            fillTable(
-                    convertableEntities,
-                    sheet,
-                    rowNumber,
-                    isRowNumerationNeeded
-            );
+            createHeaders(sheet.createRow(rowNumber++), convertableEntities.get(0).getFieldsNames(), isRowNumerationNeeded);
+            fillTable(convertableEntities, sheet, rowNumber, isRowNumerationNeeded);
             autosizeColumns(sheet);
+
             workbook.write(destinationStream);
         } catch (Exception e) {
             e.printStackTrace();

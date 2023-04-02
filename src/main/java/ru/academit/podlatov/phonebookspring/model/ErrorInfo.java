@@ -10,11 +10,11 @@ public class ErrorInfo {
         this.messages = messages;
     }
 
-    public ErrorInfo(String message) {
-        messages.add(message);
-    }
-
     public List<String> getMessages() {
         return messages;
+    }
+
+    public ErrorInfo(String message) {
+        messages.add(message);
     }
 }
